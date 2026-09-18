@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>LomiMarc — Delivery</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Work+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header>
+  <div class="headrow">
+    <div>
+      <div class="brand">Lomi<span>Marc</span></div>
+      <div class="delivery-badge">Delivery 0991 729311</div>
+    </div>
+    <button id="cartBtn" onclick="openCart()">🛒 Pedido <span id="cartCount">0</span></button>
+  </div>
+  <div id="hoursBadge" class="hours-badge"></div>
+  <nav>
+    <a href="#gourmet">Gourmet</a>
+    <a href="#caseras">Caseras</a>
+    <a href="#lomito">Sandwich de lomito</a>
+    <a href="#pancho">Super pancho</a>
+    <a href="#papas">Papas fritas</a>
+    <a href="#agregados">Agregados</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <h1>Sabor que<br><em>te conquista.</em></h1>
+    <p>Hamburguesas 100% de vacío, sandwich de lomito y super panchos gourmet. Armá tu pedido y lo mandamos directo por WhatsApp.</p>
+    <span class="tag">¡Hacemos tu hambre feliz! 😊</span>
+  </div>
+</section>
+
+<main class="wrap" id="menu"></main>
+
+<footer>LomiMarc · Delivery 0991 729311 · Grandes porciones, mejores sabores</footer>
+
+<div id="overlay" onclick="closeCart()"></div>
+<div id="drawer">
+  <div class="dhead">
+    <h2>Tu pedido</h2>
+    <div class="dhead-actions">
+      <button id="clearBtn" class="clear-btn" onclick="clearCart()">Vaciar</button>
+      <button onclick="closeCart()" aria-label="Cerrar">✕</button>
+    </div>
+  </div>
+  <div id="items"></div>
+  <div id="fulfillment">
+    <div class="fgroup">
+      <label for="nameInput">Nombre y apellido</label>
+      <input type="text" id="nameInput" placeholder="Ej: Juan Pérez" oninput="onNameInput()">
+    </div>
+    <div class="fgroup">
+      <label>Forma de entrega</label>
+      <div class="seg" id="modeSeg">
+        <button type="button" class="segbtn active" data-mode="delivery" onclick="setMode('delivery')">Delivery</button>
+        <button type="button" class="segbtn" data-mode="pickup" onclick="setMode('pickup')">Retiro en local</button>
+      </div>
+    </div>
+    <div class="fgroup" id="addressGroup">
+      <label for="addressInput">Dirección / barrio</label>
+      <input type="text" id="addressInput" placeholder="Ej: Mcal. López c/ Perú, Mariano R. Alonso" oninput="onAddressInput()">
+      <button type="button" id="locBtn" class="loc-btn" onclick="toggleLocMode()">📍 Voy a enviar mi ubicación por WhatsApp</button>
+    </div>
+    <div class="fgroup">
+      <label>Método de pago</label>
+      <div class="seg" id="paySeg">
+        <button type="button" class="segbtn active" data-pay="efectivo" onclick="setPay('efectivo')">Efectivo</button>
+        <button type="button" class="segbtn" data-pay="transferencia" onclick="setPay('transferencia')">Transferencia</button>
+      </div>
+    </div>
+  </div>
+  <div class="dfoot">
+    <div class="totalRow sub-total"><span>Subtotal</span><span id="subtotalVal">Gs. 0</span></div>
+    <div class="totalRow sub-total" id="deliveryRow"><span>Envío</span><span id="deliveryVal">Gs. 0</span></div>
+    <div class="totalRow"><span>Total</span><span id="totalVal">Gs. 0</span></div>
+    <a id="checkout" class="disabled" href="#">Enviar pedido por WhatsApp</a>
+    <div id="addressWarning" class="warning">Escribí tu dirección o tocá "voy a enviar mi ubicación" para continuar</div>
+    <div id="nameWarning" class="warning">Escribí tu nombre y apellido para continuar</div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
