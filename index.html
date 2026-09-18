@@ -51,29 +51,31 @@
       <button onclick="closeCart()" aria-label="Cerrar">✕</button>
     </div>
   </div>
-  <div id="items"></div>
-  <div id="fulfillment">
-    <div class="fgroup">
-      <label for="nameInput">Nombre y apellido</label>
-      <input type="text" id="nameInput" placeholder="Ej: Juan Pérez" oninput="onNameInput()">
-    </div>
-    <div class="fgroup">
-      <label>Forma de entrega</label>
-      <div class="seg" id="modeSeg">
-        <button type="button" class="segbtn active" data-mode="delivery" onclick="setMode('delivery')">Delivery</button>
-        <button type="button" class="segbtn" data-mode="pickup" onclick="setMode('pickup')">Retiro en local</button>
+  <div id="drawerScroll">
+    <div id="items"></div>
+    <div id="fulfillment">
+      <div class="fgroup">
+        <label for="nameInput">Nombre y apellido</label>
+        <input type="text" id="nameInput" placeholder="Ej: Juan Pérez" oninput="onNameInput()">
       </div>
-    </div>
-    <div class="fgroup" id="addressGroup">
-      <label for="addressInput">Dirección / barrio</label>
-      <input type="text" id="addressInput" placeholder="Ej: Mcal. López c/ Perú, Mariano R. Alonso" oninput="onAddressInput()">
-      <button type="button" id="locBtn" class="loc-btn" onclick="toggleLocMode()">📍 Voy a enviar mi ubicación por WhatsApp</button>
-    </div>
-    <div class="fgroup">
-      <label>Método de pago</label>
-      <div class="seg" id="paySeg">
-        <button type="button" class="segbtn active" data-pay="efectivo" onclick="setPay('efectivo')">Efectivo</button>
-        <button type="button" class="segbtn" data-pay="transferencia" onclick="setPay('transferencia')">Transferencia</button>
+      <div class="fgroup">
+        <label>Forma de entrega</label>
+        <div class="seg" id="modeSeg">
+          <button type="button" class="segbtn active" data-mode="delivery" onclick="setMode('delivery')">Delivery</button>
+          <button type="button" class="segbtn" data-mode="pickup" onclick="setMode('pickup')">Retiro en local</button>
+        </div>
+      </div>
+      <div class="fgroup" id="addressGroup">
+        <label for="addressInput">Dirección / barrio</label>
+        <input type="text" id="addressInput" placeholder="Ej: Mcal. López c/ Perú, Mariano R. Alonso" oninput="onAddressInput()">
+        <button type="button" id="locBtn" class="loc-btn" onclick="toggleLocMode()">📍 Voy a enviar mi ubicación por WhatsApp</button>
+      </div>
+      <div class="fgroup">
+        <label>Método de pago</label>
+        <div class="seg" id="paySeg">
+          <button type="button" class="segbtn active" data-pay="efectivo" onclick="setPay('efectivo')">Efectivo</button>
+          <button type="button" class="segbtn" data-pay="transferencia" onclick="setPay('transferencia')">Transferencia</button>
+        </div>
       </div>
     </div>
   </div>

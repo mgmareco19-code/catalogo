@@ -25,11 +25,11 @@ const MENU = [
    {n:"Super Pancho Normal", d:"Salsa criolla, papas pay, ketchup y mostaza", p:{Normal:12000,Combo:15000}},
    {n:"Super Pancho Completo", d:"Salsa cheddar, criolla, papas pay, queso mozzarella derretido", p:{Normal:18000,Combo:21000}},
  ]},
- {id:"papas", title:"Papas fritas", sub:"", icon:"🍟", items:[
+ {id:"papas", title:"Papas fritas", sub:"", icon:"🍟", compact:true, items:[
    {n:"Papas medianas", d:"", p:{Único:13000}},
    {n:"Papas cheddar y bacon", d:"", p:{Único:23000}},
  ]},
- {id:"agregados", title:"Agregados", sub:"", icon:"➕", items:[
+ {id:"agregados", title:"Agregados", sub:"", icon:"➕", compact:true, items:[
    {n:"Huevo", d:"", p:{Único:4000}},
    {n:"Bacon", d:"", p:{Único:4000}},
    {n:"Salsa cheddar", d:"", p:{Único:4000}},
@@ -47,7 +47,7 @@ function renderMenu(){
     <section class="cat" id="${cat.id}">
       <h2>${cat.icon} ${cat.title}</h2>
       ${cat.sub ? `<div class="sub">${cat.sub}</div>` : ''}
-      <div class="grid">
+      <div class="grid ${cat.compact ? 'grid-compact' : ''}">
         ${cat.items.map(it => `
           <div class="card">
             <h3>${it.n}</h3>
