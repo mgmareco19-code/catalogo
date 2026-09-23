@@ -89,6 +89,7 @@ function setMode(m){
   document.getElementById('addressGroup').classList.toggle('hidden', m!=='delivery');
   document.getElementById('deliveryRow').classList.toggle('hidden', m!=='delivery');
   document.getElementById('tableGroup').classList.toggle('hidden', m!=='local');
+  document.getElementById('phoneGroup').classList.toggle('hidden', m==='local');
   renderCart();
 }
 function onTableInput(){
@@ -183,7 +184,7 @@ function renderCart(){
   const needsAddress = mode==='delivery' && cart.length>0 && address==='' && !sendLoc;
   const needsTable = mode==='local' && cart.length>0 && table==='';
   const needsName = cart.length>0 && name==='';
-  const needsPhone = cart.length>0 && phone==='';
+  const needsPhone = mode!=='local' && cart.length>0 && phone==='';
 
   // El botón ya no arma un link href directo: ahora siempre corre confirmarPedido(),
   // que primero guarda el pedido en APEX y recién después abre WhatsApp.
@@ -307,6 +308,7 @@ function resetPedido(){
   document.getElementById('addressGroup').classList.remove('hidden');
   document.getElementById('deliveryRow').classList.remove('hidden');
   document.getElementById('tableGroup').classList.add('hidden');
+  document.getElementById('phoneGroup').classList.remove('hidden');
 
   const locBtn = document.getElementById('locBtn');
   locBtn.classList.remove('active');
