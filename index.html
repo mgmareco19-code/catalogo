@@ -59,16 +59,25 @@
         <input type="text" id="nameInput" placeholder="Ej: Juan Pérez" oninput="onNameInput()">
       </div>
       <div class="fgroup">
+        <label for="phoneInput">Número de teléfono</label>
+        <input type="tel" id="phoneInput" placeholder="Ej: 0991 729311" oninput="onPhoneInput()">
+      </div>
+      <div class="fgroup">
         <label>Forma de entrega</label>
         <div class="seg" id="modeSeg">
           <button type="button" class="segbtn active" data-mode="delivery" onclick="setMode('delivery')">Delivery</button>
           <button type="button" class="segbtn" data-mode="pickup" onclick="setMode('pickup')">Retiro en local</button>
+          <button type="button" class="segbtn" data-mode="local" onclick="setMode('local')">Comer acá</button>
         </div>
       </div>
       <div class="fgroup" id="addressGroup">
         <label for="addressInput">Dirección / barrio</label>
         <input type="text" id="addressInput" placeholder="Ej: Mcal. López c/ Perú, Mariano R. Alonso" oninput="onAddressInput()">
         <button type="button" id="locBtn" class="loc-btn" onclick="toggleLocMode()">📍 Voy a enviar mi ubicación por WhatsApp</button>
+      </div>
+      <div class="fgroup hidden" id="tableGroup">
+        <label for="tableInput">Número de mesa</label>
+        <input type="text" id="tableInput" placeholder="Ej: 5" oninput="onTableInput()">
       </div>
       <div class="fgroup">
         <label>Método de pago</label>
@@ -85,7 +94,9 @@
     <div class="totalRow"><span>Total</span><span id="totalVal">Gs. 0</span></div>
     <a id="checkout" class="disabled" href="#">Enviar pedido por WhatsApp</a>
     <div id="addressWarning" class="warning">Escribí tu dirección o tocá "voy a enviar mi ubicación" para continuar</div>
+    <div id="tableWarning" class="warning">Escribí el número de mesa para continuar</div>
     <div id="nameWarning" class="warning">Escribí tu nombre y apellido para continuar</div>
+    <div id="phoneWarning" class="warning">Escribí tu número de teléfono para continuar</div>
   </div>
 </div>
 
