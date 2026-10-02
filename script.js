@@ -79,7 +79,7 @@ function renderHoursBadge(){
     : `<span class="dot"></span> Cerrado ahora · Abrimos ${HOURS.open}:00hs`;
 }
 
-let mode = 'delivery';   // 'delivery' | 'pickup' | 'local'
+let mode = 'delivery';   // 'delivery' | 'pickup'
 let pay = 'efectivo';    // 'efectivo' | 'transferencia'
 let sendLoc = false;     // true si va a mandar la ubicación por WhatsApp en vez de escribirla
 
@@ -88,12 +88,6 @@ function setMode(m){
   document.querySelectorAll('#modeSeg .segbtn').forEach(b=>b.classList.toggle('active', b.dataset.mode===m));
   document.getElementById('addressGroup').classList.toggle('hidden', m!=='delivery');
   document.getElementById('deliveryRow').classList.toggle('hidden', m!=='delivery');
-  document.getElementById('tableGroup').classList.toggle('hidden', m!=='local');
-  document.getElementById('phoneGroup').classList.toggle('hidden', m==='local');
-  renderCart();
-}
-function onTableInput(){
-  document.getElementById('tableWarning').classList.remove('show');
   renderCart();
 }
 function setPay(p){
@@ -180,11 +174,9 @@ function renderCart(){
   const address = document.getElementById('addressInput').value.trim();
   const name = document.getElementById('nameInput').value.trim();
   const phone = document.getElementById('phoneInput').value.trim();
-  const table = document.getElementById('tableInput').value.trim();
   const needsAddress = mode==='delivery' && cart.length>0 && address==='' && !sendLoc;
-  const needsTable = mode==='local' && cart.length>0 && table==='';
   const needsName = cart.length>0 && name==='';
-  const needsPhone = mode!=='local' && cart.length>0 && phone==='';
+  const needsPhone = cart.length>0 && phone==='';
 
   // El botón ya no arma un link href directo: ahora siempre corre confirmarPedido(),
   // que primero guarda el pedido en APEX y recién después abre WhatsApp.
@@ -194,7 +186,6 @@ function renderCart(){
     btn.classList.add('disabled');
     btn.onclick = function(e){ e.preventDefault(); };
     document.getElementById('addressWarning').classList.remove('show');
-    document.getElementById('tableWarning').classList.remove('show');
     document.getElementById('nameWarning').classList.remove('show');
     document.getElementById('phoneWarning').classList.remove('show');
   } else if(needsName){
@@ -206,27 +197,23 @@ function renderCart(){
   } else if(needsAddress){
     btn.classList.remove('disabled');
     btn.onclick = function(e){ e.preventDefault(); document.getElementById('addressInput').focus(); document.getElementById('addressWarning').classList.add('show'); };
-  } else if(needsTable){
-    btn.classList.remove('disabled');
-    btn.onclick = function(e){ e.preventDefault(); document.getElementById('tableInput').focus(); document.getElementById('tableWarning').classList.add('show'); };
   } else {
     btn.classList.remove('disabled');
     document.getElementById('addressWarning').classList.remove('show');
-    document.getElementById('tableWarning').classList.remove('show');
     document.getElementById('nameWarning').classList.remove('show');
     document.getElementById('phoneWarning').classList.remove('show');
-    btn.onclick = function(e){ e.preventDefault(); confirmarPedido(name, phone, address, table, total, deliveryFee, grandTotal); };
+    btn.onclick = function(e){ e.preventDefault(); confirmarPedido(name, phone, address, total, deliveryFee, grandTotal); };
   }
 }
 
 // ── Guarda el pedido en APEX y recién después abre WhatsApp ──
-async function confirmarPedido(name, phone, address, table, total, deliveryFee, grandTotal){
+async function confirmarPedido(name, phone, address, total, deliveryFee, grandTotal){
   const btn = document.getElementById('checkout');
   const textoOriginal = btn.textContent;
   btn.classList.add('disabled');
   btn.textContent = 'Enviando pedido...';
 
-  const tipoEntrega = mode === 'delivery' ? 'DELIVERY' : (mode === 'local' ? 'LOCAL' : 'RETIRO');
+  const tipoEntrega = mode === 'delivery' ? 'DELIVERY' : 'RETIRO';
 
   const payload = {
     nombre_cliente: name,
@@ -235,7 +222,6 @@ async function confirmarPedido(name, phone, address, table, total, deliveryFee, 
     direccion: mode === 'delivery' && !sendLoc ? address : null,
     envia_ubicacion: mode === 'delivery' && sendLoc ? 1 : 0,
     metodo_pago: pay === 'efectivo' ? 'EFECTIVO' : 'TRANSFERENCIA',
-    numero_mesa: mode === 'local' ? table : null,
     items: cart.map(c => ({
       producto_id: c.productoId,
       variante: c.variante,
@@ -257,28 +243,38 @@ async function confirmarPedido(name, phone, address, table, total, deliveryFee, 
   }
 
   // Arma el mensaje de WhatsApp igual que antes, agregando el número de pedido si se guardó
-  let msg = pedidoId
-    ? `Hola LomiMarc! 👋 Quiero hacer el pedido #${pedidoId}:%0A%0A`
-    : "Hola LomiMarc! 👋 Quiero hacer este pedido:%0A%0A";
-  cart.forEach(c=> msg += `• ${c.qty}x ${c.name} — ${gs(c.price*c.qty)}%0A`);
-  msg += `%0ASubtotal: ${gs(total)}%0A`;
-  if(mode==='delivery') msg += `Envío: ${gs(deliveryFee)}%0A`;
-  msg += `Total: ${gs(grandTotal)}%0A%0A`;
-  msg += `Nombre: ${encodeURIComponent(name)}%0A`;
-  msg += `Teléfono: ${encodeURIComponent(phone)}%0A`;
-  const modoTexto = mode==='delivery' ? 'Delivery' : (mode==='local' ? 'Consumo en el local' : 'Retiro en local');
-  msg += `Forma de entrega: ${modoTexto}%0A`;
-  if(mode==='delivery'){
-    msg += sendLoc
-      ? `Dirección: (te mando la ubicación por acá 📍)%0A`
-      : `Dirección: ${encodeURIComponent(address)}%0A`;
-  }
-  if(mode==='local'){
-    msg += `Mesa: ${encodeURIComponent(table)}%0A`;
-  }
-  msg += `Método de pago: ${pay==='efectivo' ? 'Efectivo' : 'Transferencia'}`;
+let msg = pedidoId
+    ? `Hola LomiMarc! \u{1F44B} Quiero hacer el pedido #${pedidoId}:\n\n`
+    : `Hola LomiMarc! \u{1F44B} Quiero hacer este pedido:\n\n`;
 
-  window.open(`https://wa.me/${WA}?text=${msg}`, '_blank');
+cart.forEach(c => {
+    msg += `• ${c.qty}x ${c.name} — ${gs(c.price * c.qty)}\n`;
+});
+
+msg += `\nSubtotal: ${gs(total)}\n`;
+
+if (mode === 'delivery') {
+    msg += `Envío: ${gs(deliveryFee)}\n`;
+}
+
+msg += `Total: ${gs(grandTotal)}\n\n`;
+
+msg += `Nombre: ${name}\n`;
+msg += `Teléfono: ${phone}\n`;
+msg += `Forma de entrega: ${mode === 'delivery' ? 'Delivery' : 'Retiro en local'}\n`;
+
+if (mode === 'delivery') {
+    msg += sendLoc
+        ? `Dirección: (te mando la ubicación por acá \u{1F4CD})\n`
+        : `Dirección: ${address}\n`;
+}
+
+msg += `Método de pago: ${pay === 'efectivo' ? 'Efectivo' : 'Transferencia'}`;
+
+window.open(
+    `https://wa.me/${WA}?text=${encodeURIComponent(msg)}`,
+    '_blank'
+);
 
   btn.textContent = textoOriginal;
 
@@ -297,7 +293,6 @@ function resetPedido(){
   document.getElementById('nameInput').value = '';
   document.getElementById('phoneInput').value = '';
   document.getElementById('addressInput').value = '';
-  document.getElementById('tableInput').value = '';
 
   mode = 'delivery';
   pay = 'efectivo';
@@ -307,8 +302,6 @@ function resetPedido(){
   document.querySelectorAll('#paySeg .segbtn').forEach(b=>b.classList.toggle('active', b.dataset.pay==='efectivo'));
   document.getElementById('addressGroup').classList.remove('hidden');
   document.getElementById('deliveryRow').classList.remove('hidden');
-  document.getElementById('tableGroup').classList.add('hidden');
-  document.getElementById('phoneGroup').classList.remove('hidden');
 
   const locBtn = document.getElementById('locBtn');
   locBtn.classList.remove('active');
@@ -316,7 +309,6 @@ function resetPedido(){
   document.getElementById('addressInput').classList.remove('hidden');
 
   document.getElementById('addressWarning').classList.remove('show');
-  document.getElementById('tableWarning').classList.remove('show');
   document.getElementById('nameWarning').classList.remove('show');
   document.getElementById('phoneWarning').classList.remove('show');
 
